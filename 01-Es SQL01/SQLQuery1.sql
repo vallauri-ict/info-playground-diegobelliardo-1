@@ -57,12 +57,12 @@ GROUP BY f.CodFilm,f.Regista, f.Titolo
 HAVING count(*)<6*/
 
 --26 per ogni film di fantascenza che non è mai stato proiettato primna dell'01/01/01 il titolo e l'incasso totale di tutte le proiezioni
-SELECT f.titolo
+/*SELECT f.titolo
 FROM Film f, Proiezioni p
 WHERE p.CodFilm=f.CodFilm
 AND f.Genere='Fantascienza'
 GROUP BY f.CodFilm, f.titolo
-HAVING min(p.DataProiezione)>=Cast('2001-01-01' as Date);
+HAVING min(p.DataProiezione)>=Cast('2001-01-01' as Date);*/
 
 --26 per ogni film di fantascenza che non è mai stato proiettato primna dell'01/01/01 il titolo e l'incasso totale di tutte le proiezioni
 /*SELECT f.titolo, sum(p.Incasso) as IncassoTotale
@@ -92,20 +92,44 @@ WHERE p.Incasso<=500
 AND p.CodFilm=f.CodFilm)*/
 
 --Il nome degli attori italiani che non hanno mai recitato in film di Fellini
-SELECT *
+/*SELECT *
 FROM Attori	a
 WHERE a.Nazionalita='Italia'
 AND not exists (SELECT * FROM Film f, Recita r
 WHERE r.CodFilm=f.CodFilm
 AND a.CodAttore=r.CodAttore
-AND f.Regista='Fellini')
+AND f.Regista='Fellini')*/
 
 --33 Il titolo dei film di Fellini in cui non recitano attori italiani
-SELECT *
+/*SELECT *
 FROM Film f
 WHERE f.Regista='Fellini'
 AND not exists (SELECT * FROM
 Attori a, Recita r
 WHERE f.CodFilm=r.CodFilm
 AND r.CodAttore=a.CodAttore
-AND a.Nazionalita='Italia')
+AND a.Nazionalita='Italia')*/
+
+--34 Il titolo dei film senza attori
+/*SELECT *
+FROM Film f
+WHERE not exists (SELECT * FROM Recita r
+WHERE r.CodFilm=f.CodFilm) */
+
+--35 Gli attori che prima del 1960 (Anno produzione) hanno recitato solo nei film di Fellini
+/*SELECT *
+FROM Attori a
+WHERE not exists (SELECT * FROM Film f, Recita r
+WHERE a.CodAttore=r.CodAttore
+AND f.CodFilm=r.CodFilm
+AND f.AnnoProduzione < 1960
+AND f.Regista<>'Fellini')*/
+
+--36 Gli attori che hanno recitato in film di Fellini solo prima del 1960
+SELECT *
+FROM Attori	a
+WHERE not exists (SELECT * FROM Film f, Recita r
+WHERE a.CodAttore=r.CodAttore
+AND f.CodFilm=r.CodFilm
+AND f.AnnoProduzione>1960
+AND f.Regista='Fellini')
